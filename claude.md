@@ -98,3 +98,62 @@ A new chatbot feature integrated into the GetStatus PM Platform, designed specif
 ### Documentation:
 - Full chatbot overview: `docs/features/chatbot/chatbot.md`
 - Epic and stories: `docs/features/chatbot/private-stakeholder-chatbot.md`
+
+## Stakeholder Invitation Flows
+
+A feature that enables existing stakeholders to invite other stakeholders to join their company or collaborate on projects.
+
+### Use Cases:
+- Company owners invite contractors, lawyers, or other professionals to join their company
+- Project managers invite stakeholders to collaborate on specific projects
+- Building collaborative teams across the GetStatus platform
+
+### Three Invitation Scenarios:
+
+**Scenario 1: New User (No Account)**
+- User receives invite via email
+- Completes registration form with minimal required fields
+- Role is pre-defined by inviter (not chosen by invitee)
+- Account created and automatically associated with company/project
+- Fields collected: Name, Email, Phone (optional), Password, Confirm Password
+
+**Scenario 2: Existing User, Logged In**
+- Logged-in user clicks invite link
+- Sees simple acceptance screen with invite details
+- One-click acceptance immediately adds them to company/project
+- Redirected to relevant dashboard
+
+**Scenario 3: Existing User, Logged Out**
+- User with existing account clicks invite link
+- Personalized greeting with their name
+- Prompted to sign in to accept invitation
+- Redirected to stakeholder login page
+- After login, automatically accepts invite
+
+### Key Design Principles:
+- **Role is Inviter-Defined:** Professional role (contractor, lawyer, supervisor) specified by inviter
+- **Minimal Friction:** Only collect essential information during signup
+- **Context Preservation:** Maintain invite context throughout authentication flow
+- **Personalization:** Greet known users by name when possible
+- **Clean UI:** Reduce redundancy, use info icons instead of warning cards
+
+### Demo URLs:
+- Scenario 1 (New User): `/invite/demo?scenario=1`
+- Scenario 2 (Logged In): `/invite/demo?scenario=2`
+- Scenario 3 (Logged Out): `/invite/demo?scenario=3`
+
+### Documentation:
+- Full PRD: `docs/features/login signup invites/invites.md`
+- Component: `frontend/src/components/StakeholderInviteDemo.jsx`
+
+## Deployment
+
+The application is deployed on Vercel with automatic deployments from the `main` branch.
+
+### Configuration:
+- Build from `frontend` subdirectory using Vite
+- SPA routing handled via rewrites in `vercel.json`
+- All routes redirect to `index.html` for client-side routing
+
+### Repository:
+- GitHub: https://github.com/adidacta/getai
