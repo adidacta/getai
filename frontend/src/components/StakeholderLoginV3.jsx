@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, ArrowLeft, Briefcase, Shield, CheckCircle, Menu, X, Users, Hammer, TrendingUp } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, Briefcase, Shield, CheckCircle, Menu, X, Users, Hammer, TrendingUp, Phone } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function StakeholderLoginV3() {
@@ -10,8 +10,10 @@ export default function StakeholderLoginV3() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [loginMethod, setLoginMethod] = useState('email'); // 'email' or 'phone'
   const [formData, setFormData] = useState({
     email: '',
+    phone: '',
     password: ''
   });
 
@@ -155,101 +157,109 @@ export default function StakeholderLoginV3() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           {/* Left Column - Form */}
           <div className="order-2 lg:order-1">
             {/* Title */}
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
               Professional Login
             </h1>
 
-            {/* Educational Content */}
-            <div className="bg-indigo-50 border-l-4 border-indigo-500 p-6 rounded-lg mb-8">
-              <div className="flex items-start gap-3">
-                <Briefcase className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" />
-                <div>
-                  <p className="text-gray-700 leading-relaxed mb-3">
-                    <strong>GetStatus</strong> connects professionals with urban renewal opportunities.
-                  </p>
-                  <ul className="text-gray-700 space-y-1.5 text-sm">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-                      <span>Manage projects with transparency</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-                      <span>Showcase your expertise to thousands of residents</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-                      <span>Find collaboration opportunities</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Email Input */}
+              {/* Login Method Tabs */}
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setLoginMethod('email')}
+                  className={`flex-1 py-3 px-4 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-2 ${
+                    loginMethod === 'email'
+                      ? 'bg-indigo-600 text-white shadow-md'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  <Mail className="w-4 h-4" />
+                  Login with Email
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLoginMethod('phone')}
+                  className={`flex-1 py-3 px-4 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-2 ${
+                    loginMethod === 'phone'
+                      ? 'bg-indigo-600 text-white shadow-md'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  <Phone className="w-4 h-4" />
+                  Login with Phone
+                </button>
+              </div>
+
+              {/* Email/Phone Input */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Email Address
+                  {loginMethod === 'email' ? 'Email Address' : 'Mobile Number'}
                 </label>
                 <div className="relative">
                   <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
+                    type={loginMethod === 'email' ? 'email' : 'tel'}
+                    name={loginMethod === 'email' ? 'email' : 'phone'}
+                    value={loginMethod === 'email' ? formData.email : formData.phone}
                     onChange={handleInputChange}
-                    placeholder="your@company.com"
+                    placeholder={loginMethod === 'email' ? 'your@company.com' : '+972-50-123-4567'}
                     className={`w-full px-4 py-4 pl-12 text-lg border-2 rounded-xl focus:outline-none focus:ring-2 transition-all ${
                       error
                         ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
                         : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-200'
                     }`}
                   />
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  {loginMethod === 'email' ? (
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  ) : (
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  )}
                 </div>
               </div>
 
-              {/* Password Input */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-semibold text-gray-700">
-                    Password
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => navigate('/forgot-password')}
-                    className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                  >
-                    Forgot password?
-                  </button>
+              {/* Password Input - Only for Email Login */}
+              {loginMethod === 'email' && (
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-semibold text-gray-700">
+                      Password
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => navigate('/forgot-password')}
+                      className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      placeholder="••••••••"
+                      className={`w-full px-4 py-4 pl-12 pr-12 text-lg border-2 rounded-xl focus:outline-none focus:ring-2 transition-all ${
+                        error
+                          ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                          : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-200'
+                      }`}
+                    />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
                 </div>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    placeholder="••••••••"
-                    className={`w-full px-4 py-4 pl-12 pr-12 text-lg border-2 rounded-xl focus:outline-none focus:ring-2 transition-all ${
-                      error
-                        ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                        : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-200'
-                    }`}
-                  />
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-              </div>
+              )}
 
               {/* Error Message */}
               {error && (
@@ -263,30 +273,66 @@ export default function StakeholderLoginV3() {
                 </div>
               )}
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-4 px-8 rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 text-lg flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                ) : (
-                  <>
-                    Sign In
-                    <ArrowLeft className="w-5 h-5 rotate-180 group-hover:translate-x-1 transition-transform" />
-                  </>
-                )}
-              </button>
+              {/* Submit Button - Different for Email vs Phone */}
+              {loginMethod === 'email' ? (
+                <>
+                  {/* Email Login: Sign In with Password */}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-4 px-8 rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 text-lg flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? (
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    ) : (
+                      <>
+                        Sign In with Password
+                        <ArrowLeft className="w-5 h-5 rotate-180 group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
+                  </button>
 
-              {/* Alternative Login Option */}
-              <button
-                type="button"
-                onClick={() => navigate('/verify-otp', { state: { email: formData.email } })}
-                className="w-full bg-white border-2 border-gray-200 text-gray-700 py-3.5 px-6 rounded-xl font-semibold hover:border-indigo-300 hover:bg-indigo-50 transition-all"
-              >
-                Get one-time SMS code
-              </button>
+                  {/* Divider with OR */}
+                  <div className="relative py-2">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div className="relative flex justify-center">
+                      <span className="bg-gradient-to-br from-slate-50 via-white to-indigo-50 px-4 text-sm font-medium text-gray-500">
+                        OR
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Alternative Login Option - OTP for Email */}
+                  <button
+                    type="button"
+                    onClick={() => navigate('/verify-otp3', { state: { email: formData.email } })}
+                    className="w-full bg-white border-2 border-indigo-200 text-indigo-700 py-3.5 px-6 rounded-xl font-semibold hover:bg-indigo-50 hover:border-indigo-300 transition-all flex items-center justify-center gap-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    Sign In with One-Time Code Instead
+                  </button>
+                </>
+              ) : (
+                <>
+                  {/* Phone Login: Get OTP Code */}
+                  <button
+                    type="button"
+                    onClick={() => navigate('/verify-otp3', { state: { phone: formData.phone } })}
+                    disabled={!formData.phone}
+                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-4 px-8 rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 text-lg flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    Get Verification Code
+                    <ArrowLeft className="w-5 h-5 rotate-180 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </>
+              )}
 
               {/* Help Text */}
               <p className="text-sm text-gray-500 text-center">
@@ -303,8 +349,8 @@ export default function StakeholderLoginV3() {
           </div>
 
           {/* Right Column - Illustration */}
-          <div className="order-1 lg:order-2 flex items-center justify-center">
-            <div className="relative max-w-md w-full">
+          <div className="order-1 lg:order-2">
+            <div className="relative max-w-md w-full mx-auto space-y-6">
               {/* Background Decoration */}
               <div className="absolute -top-4 -right-4 w-72 h-72 bg-indigo-200/20 rounded-full blur-3xl"></div>
               <div className="absolute -bottom-4 -left-4 w-72 h-72 bg-purple-200/20 rounded-full blur-3xl"></div>

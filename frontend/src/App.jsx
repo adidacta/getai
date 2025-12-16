@@ -16,6 +16,7 @@ import StakeholderLanding from './components/StakeholderLanding';
 import RENHomePage from './components/RENHomePage';
 import ResidentLoginV3 from './components/ResidentLoginV3';
 import StakeholderLoginV3 from './components/StakeholderLoginV3';
+import OTPVerificationV3 from './components/OTPVerificationV3';
 import DevNavigator from './components/DevNavigator';
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
           {/* V3 - Simple, modern facelift of current page */}
           <Route path="/login3/resident" element={<ResidentLoginV3 />} />
           <Route path="/login3/stakeholder" element={<StakeholderLoginV3 />} />
+          <Route path="/verify-otp3" element={<OTPVerificationV3 />} />
 
           {/* REN Home Page with redesigned nav (also available at /ren) */}
           <Route path="/ren" element={<RENHomePage />} />
