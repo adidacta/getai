@@ -14,11 +14,16 @@ import StakeholderInviteDemo from './components/StakeholderInviteDemo';
 import ResidentLanding from './components/ResidentLanding';
 import StakeholderLanding from './components/StakeholderLanding';
 import RENHomePage from './components/RENHomePage';
+import ResidentLoginV3 from './components/ResidentLoginV3';
+import DevNavigator from './components/DevNavigator';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
+        {/* Dev Navigator - For Testing */}
+        <DevNavigator />
+
         <Routes>
           {/* Default route - REN Home Page */}
           <Route path="/" element={<RENHomePage />} />
@@ -53,6 +58,9 @@ function App() {
           {/* Netflix-style landing pages */}
           <Route path="/login2/resident" element={<ResidentLanding />} />
           <Route path="/login2/stakeholder" element={<StakeholderLanding />} />
+
+          {/* V3 - Simple, modern facelift of current page */}
+          <Route path="/login3/resident" element={<ResidentLoginV3 />} />
 
           {/* REN Home Page with redesigned nav (also available at /ren) */}
           <Route path="/ren" element={<RENHomePage />} />
