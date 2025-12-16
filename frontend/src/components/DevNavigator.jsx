@@ -38,6 +38,7 @@ export default function DevNavigator() {
       icon: LogIn,
       items: [
         { name: 'Resident Login V3 (Simple)', path: '/login3/resident', icon: Users },
+        { name: 'Stakeholder Login V3 (Simple)', path: '/login3/stakeholder', icon: Briefcase },
       ]
     },
     {
