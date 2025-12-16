@@ -40,6 +40,7 @@ export default function DevNavigator() {
         { name: 'Resident Login V3 (Simple)', path: '/login3/resident', icon: Users },
         { name: 'Stakeholder Login V3 (Simple)', path: '/login3/stakeholder', icon: Briefcase },
         { name: 'OTP Verification V3', path: '/verify-otp3', icon: Shield },
+        { name: 'Forgot Password V3', path: '/forgot-password3', icon: Key },
       ]
     },
     {
