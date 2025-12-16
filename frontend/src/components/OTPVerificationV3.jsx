@@ -132,45 +132,42 @@ export default function OTPVerificationV3() {
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center gap-6">
                 <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
-                  Browse Projects
+                  Projects
                 </button>
                 <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
-                  Knowledge Base
+                  My Neighbourhood
                 </button>
                 <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
-                  Posts
+                  Urban Renewal
+                </button>
+                <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
+                  News
+                </button>
+                <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
+                  Marketplace
                 </button>
               </div>
             </div>
 
             {/* Right Side - CTAs */}
             <div className="hidden md:flex items-center gap-4">
-              {/* For Professionals Link */}
+              {/* Stakeholders Zone */}
               <button
                 onClick={() => navigate('/login2/stakeholder')}
-                className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm flex items-center gap-1.5"
+                className="text-gray-700 hover:text-gray-900 transition-colors font-medium text-sm"
               >
-                <Hammer className="w-4 h-4" />
-                For Professionals
+                Stakeholders Zone
               </button>
 
               {/* Divider */}
               <div className="w-px h-6 bg-gray-300"></div>
 
-              {/* Sign In */}
+              {/* Get Status Updates (Primary CTA) */}
               <button
-                onClick={() => navigate('/login/resident')}
-                className="text-gray-700 hover:text-gray-900 transition-colors font-medium text-sm"
-              >
-                Sign In
-              </button>
-
-              {/* Get Started (Primary CTA) */}
-              <button
-                onClick={() => navigate('/login2/resident')}
+                onClick={() => navigate('/login3/resident')}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium text-sm transition-all"
               >
-                Get Started
+                Get Status Updates
               </button>
             </div>
 
@@ -187,32 +184,32 @@ export default function OTPVerificationV3() {
           {mobileMenuOpen && (
             <div className="md:hidden border-t border-gray-200 py-4 space-y-3">
               <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
-                Browse Projects
+                Projects
               </button>
               <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
-                Knowledge Base
+                My Neighbourhood
               </button>
               <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
-                Posts
+                Urban Renewal
+              </button>
+              <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
+                News
+              </button>
+              <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
+                Marketplace
               </button>
               <div className="border-t border-gray-200 my-2"></div>
               <button
                 onClick={() => navigate('/login2/stakeholder')}
-                className="block w-full text-left px-4 py-2 text-blue-600 hover:bg-blue-50 transition-colors font-medium"
-              >
-                For Professionals
-              </button>
-              <button
-                onClick={() => navigate('/login/resident')}
                 className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                Sign In
+                Stakeholders Zone
               </button>
               <button
-                onClick={() => navigate('/login2/resident')}
+                onClick={() => navigate('/login3/resident')}
                 className="block w-full mx-4 bg-blue-600 text-white px-5 py-2 rounded-lg font-medium transition-all"
               >
-                Get Started
+                Get Status Updates
               </button>
             </div>
           )}

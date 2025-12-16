@@ -68,45 +68,42 @@ export default function StakeholderLoginV3() {
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center gap-6">
                 <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
-                  Browse Projects
+                  Projects
                 </button>
                 <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
-                  Knowledge Base
+                  My Neighbourhood
                 </button>
                 <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
-                  Posts
+                  Urban Renewal
+                </button>
+                <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
+                  News
+                </button>
+                <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
+                  Marketplace
                 </button>
               </div>
             </div>
 
             {/* Right Side - CTAs */}
             <div className="hidden md:flex items-center gap-4">
-              {/* For Residents Link */}
+              {/* Stakeholders Zone */}
               <button
-                onClick={() => navigate('/login2/resident')}
-                className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm flex items-center gap-1.5"
+                onClick={() => navigate('/login2/stakeholder')}
+                className="text-gray-700 hover:text-gray-900 transition-colors font-medium text-sm"
               >
-                <Users className="w-4 h-4" />
-                For Residents
+                Stakeholders Zone
               </button>
 
               {/* Divider */}
               <div className="w-px h-6 bg-gray-300"></div>
 
-              {/* Sign Up */}
+              {/* Get Status Updates (Primary CTA) */}
               <button
-                onClick={() => navigate('/signup/stakeholder')}
-                className="text-gray-700 hover:text-gray-900 transition-colors font-medium text-sm"
+                onClick={() => navigate('/login3/resident')}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium text-sm transition-all"
               >
-                Sign Up
-              </button>
-
-              {/* Join Network (Primary CTA) */}
-              <button
-                onClick={() => navigate('/login2/stakeholder')}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg font-medium text-sm transition-all"
-              >
-                Join Network
+                Get Status Updates
               </button>
             </div>
 
@@ -123,32 +120,32 @@ export default function StakeholderLoginV3() {
           {mobileMenuOpen && (
             <div className="md:hidden border-t border-gray-200 py-4 space-y-3">
               <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
-                Browse Projects
+                Projects
               </button>
               <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
-                Knowledge Base
+                My Neighbourhood
               </button>
               <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
-                Posts
+                Urban Renewal
+              </button>
+              <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
+                News
+              </button>
+              <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
+                Marketplace
               </button>
               <div className="border-t border-gray-200 my-2"></div>
               <button
-                onClick={() => navigate('/login2/resident')}
-                className="block w-full text-left px-4 py-2 text-blue-600 hover:bg-blue-50 transition-colors font-medium"
-              >
-                For Residents
-              </button>
-              <button
-                onClick={() => navigate('/signup/stakeholder')}
+                onClick={() => navigate('/login2/stakeholder')}
                 className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                Sign Up
+                Stakeholders Zone
               </button>
               <button
-                onClick={() => navigate('/login2/stakeholder')}
-                className="block w-full mx-4 bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium transition-all"
+                onClick={() => navigate('/login3/resident')}
+                className="block w-full mx-4 bg-blue-600 text-white px-5 py-2 rounded-lg font-medium transition-all"
               >
-                Join Network
+                Get Status Updates
               </button>
             </div>
           )}
