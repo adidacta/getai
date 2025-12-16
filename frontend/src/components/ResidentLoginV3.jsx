@@ -198,18 +198,6 @@ export default function ResidentLoginV3() {
                 Continue
                 <ArrowLeft className="w-5 h-5 rotate-180 group-hover:translate-x-1 transition-transform" />
               </button>
-
-              {/* Help Text */}
-              <p className="text-sm text-gray-500 text-center">
-                Already have an account?{' '}
-                <button
-                  type="button"
-                  onClick={() => navigate('/login/resident')}
-                  className="text-blue-600 hover:text-blue-700 font-medium hover:underline"
-                >
-                  Sign in here
-                </button>
-              </p>
             </form>
           </div>
 
