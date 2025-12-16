@@ -20,8 +20,8 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Default route - redirect to login */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          {/* Default route - REN Home Page */}
+          <Route path="/" element={<RENHomePage />} />
 
           {/* Login routes */}
           <Route path="/login/:userType?" element={<LoginSelection />} />
@@ -54,11 +54,11 @@ function App() {
           <Route path="/login2/resident" element={<ResidentLanding />} />
           <Route path="/login2/stakeholder" element={<StakeholderLanding />} />
 
-          {/* REN Home Page with redesigned nav */}
+          {/* REN Home Page with redesigned nav (also available at /ren) */}
           <Route path="/ren" element={<RENHomePage />} />
 
-          {/* Catch all - redirect to login */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          {/* Catch all - redirect to home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </AuthProvider>
