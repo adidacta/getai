@@ -10,6 +10,10 @@ import OTPVerification from './components/OTPVerification';
 import ForgotPassword from './components/ForgotPassword';
 import ApprovalWaiting from './components/ApprovalWaiting';
 import InviteSignup from './components/InviteSignup';
+import StakeholderInviteDemo from './components/StakeholderInviteDemo';
+import ResidentLanding from './components/ResidentLanding';
+import StakeholderLanding from './components/StakeholderLanding';
+import RENHomePage from './components/RENHomePage';
 
 function App() {
   return (
@@ -42,6 +46,16 @@ function App() {
 
           {/* Invite-based signup (with token in URL) */}
           <Route path="/invite/:token" element={<InviteSignup />} />
+
+          {/* Stakeholder invite demo (use ?scenario=1,2,3) */}
+          <Route path="/invite/demo" element={<StakeholderInviteDemo />} />
+
+          {/* Netflix-style landing pages */}
+          <Route path="/login2/resident" element={<ResidentLanding />} />
+          <Route path="/login2/stakeholder" element={<StakeholderLanding />} />
+
+          {/* REN Home Page with redesigned nav */}
+          <Route path="/ren" element={<RENHomePage />} />
 
           {/* Catch all - redirect to login */}
           <Route path="*" element={<Navigate to="/login" replace />} />
