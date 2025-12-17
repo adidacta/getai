@@ -1,11 +1,33 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Building2, Users, Scale, Shield, Hammer, LayoutGrid, FileText, BookOpen, Menu, X, TrendingUp } from 'lucide-react';
+import { Search, Building2, Users, Scale, Shield, Hammer, LayoutGrid, FileText, BookOpen, Menu, X, TrendingUp, ChevronDown } from 'lucide-react';
 
 export default function RENHomePage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [stakeholderDropdownOpen, setStakeholderDropdownOpen] = useState(false);
+  const [knowledgeDropdownOpen, setKnowledgeDropdownOpen] = useState(false);
+
+  const stakeholderDropdownRef = useRef(null);
+  const knowledgeDropdownRef = useRef(null);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (stakeholderDropdownRef.current && !stakeholderDropdownRef.current.contains(event.target)) {
+        setStakeholderDropdownOpen(false);
+      }
+      if (knowledgeDropdownRef.current && !knowledgeDropdownRef.current.contains(event.target)) {
+        setKnowledgeDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -27,41 +49,89 @@ export default function RENHomePage() {
     <div className="min-h-screen bg-white">
       {/* Navigation Bar */}
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-full px-6">
           <div className="flex items-center justify-between h-16">
-            {/* Left Side - Logo & Main Nav */}
-            <div className="flex items-center gap-8">
-              {/* Logo */}
+            {/* Left Side - Logo */}
+            <div className="flex items-center">
               <button onClick={() => navigate('/')} className="flex items-center gap-2">
-                <img src="/logo.png" alt="GetStatus" className="h-8" />
+                <img src="/logo.png" alt="GetStatus" className="h-10" />
+              </button>
+            </div>
+
+            {/* Center - Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
+              {/* Stakeholder Dropdown */}
+              <div className="relative" ref={stakeholderDropdownRef}>
+                <button
+                  onClick={() => setStakeholderDropdownOpen(!stakeholderDropdownOpen)}
+                  className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-base flex items-center gap-1"
+                >
+                  Stakeholder
+                  <ChevronDown className={`w-4 h-4 transition-transform ${stakeholderDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {stakeholderDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
+                    <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center gap-2">
+                      <Scale className="w-4 h-4" />
+                      Lawyers
+                    </button>
+                    <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center gap-2">
+                      <Hammer className="w-4 h-4" />
+                      Builders
+                    </button>
+                    <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center gap-2">
+                      <Shield className="w-4 h-4" />
+                      Supervisors
+                    </button>
+                    <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center gap-2">
+                      <LayoutGrid className="w-4 h-4" />
+                      Other
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-base">
+                Projects
               </button>
 
-              {/* Desktop Navigation */}
-              <div className="hidden md:flex items-center gap-6">
-                <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
-                  Projects
+              {/* Knowledge base Dropdown */}
+              <div className="relative" ref={knowledgeDropdownRef}>
+                <button
+                  onClick={() => setKnowledgeDropdownOpen(!knowledgeDropdownOpen)}
+                  className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-base flex items-center gap-1"
+                >
+                  Knowledge base
+                  <ChevronDown className={`w-4 h-4 transition-transform ${knowledgeDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
-                <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
-                  My Neighbourhood
-                </button>
-                <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
-                  Urban Renewal
-                </button>
-                <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
-                  News
-                </button>
-                <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm">
-                  Marketplace
-                </button>
+                {knowledgeDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50">
+                    <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center gap-2">
+                      <BookOpen className="w-4 h-4" />
+                      Guides
+                    </button>
+                    <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center gap-2">
+                      <FileText className="w-4 h-4" />
+                      Articles
+                    </button>
+                  </div>
+                )}
               </div>
+
+              <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-base">
+                Posts
+              </button>
+              <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-base">
+                Marketplace
+              </button>
             </div>
 
             {/* Right Side - CTAs */}
             <div className="hidden md:flex items-center gap-4">
               {/* Stakeholders Zone */}
               <button
-                onClick={() => navigate('/login2/stakeholder')}
-                className="text-gray-700 hover:text-gray-900 transition-colors font-medium text-sm"
+                onClick={() => navigate('/login3/stakeholder')}
+                className="text-gray-700 hover:text-gray-900 transition-colors font-medium text-base"
               >
                 Stakeholders Zone
               </button>
@@ -69,12 +139,12 @@ export default function RENHomePage() {
               {/* Divider */}
               <div className="w-px h-6 bg-gray-300"></div>
 
-              {/* Get Status Updates (Primary CTA) */}
+              {/* My Updates (Primary CTA) */}
               <button
                 onClick={() => navigate('/login3/resident')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium text-sm transition-all"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium text-base transition-all"
               >
-                Get Status Updates
+                My Updates
               </button>
             </div>
 
@@ -90,24 +160,53 @@ export default function RENHomePage() {
           {/* Mobile Menu */}
           {mobileMenuOpen && (
             <div className="md:hidden border-t border-gray-200 py-4 space-y-3">
+              {/* Stakeholder Section */}
+              <div className="px-4">
+                <div className="text-xs font-semibold text-gray-500 uppercase mb-2">Stakeholder</div>
+                <button className="block w-full text-left py-2 pl-4 text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2">
+                  <Scale className="w-4 h-4" />
+                  Lawyers
+                </button>
+                <button className="block w-full text-left py-2 pl-4 text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2">
+                  <Hammer className="w-4 h-4" />
+                  Builders
+                </button>
+                <button className="block w-full text-left py-2 pl-4 text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2">
+                  <Shield className="w-4 h-4" />
+                  Supervisors
+                </button>
+                <button className="block w-full text-left py-2 pl-4 text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2">
+                  <LayoutGrid className="w-4 h-4" />
+                  Other
+                </button>
+              </div>
+
               <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
                 Projects
               </button>
+
+              {/* Knowledge base Section */}
+              <div className="px-4">
+                <div className="text-xs font-semibold text-gray-500 uppercase mb-2">Knowledge base</div>
+                <button className="block w-full text-left py-2 pl-4 text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2">
+                  <BookOpen className="w-4 h-4" />
+                  Guides
+                </button>
+                <button className="block w-full text-left py-2 pl-4 text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  Articles
+                </button>
+              </div>
+
               <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
-                My Neighbourhood
-              </button>
-              <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
-                Urban Renewal
-              </button>
-              <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
-                News
+                Posts
               </button>
               <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors">
                 Marketplace
               </button>
               <div className="border-t border-gray-200 my-2"></div>
               <button
-                onClick={() => navigate('/login2/stakeholder')}
+                onClick={() => navigate('/login3/stakeholder')}
                 className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-50 transition-colors"
               >
                 Stakeholders Zone
@@ -116,7 +215,7 @@ export default function RENHomePage() {
                 onClick={() => navigate('/login3/resident')}
                 className="block w-full mx-4 bg-blue-600 text-white px-5 py-2 rounded-lg font-medium transition-all"
               >
-                Get Status Updates
+                My Updates
               </button>
             </div>
           )}
