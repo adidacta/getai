@@ -139,12 +139,12 @@ export default function RENHomePage() {
               {/* Divider */}
               <div className="w-px h-6 bg-gray-300"></div>
 
-              {/* My Updates (Primary CTA) */}
+              {/* Project Status (Primary CTA) */}
               <button
                 onClick={() => navigate('/login3/resident')}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium text-base transition-all"
               >
-                My Updates
+                Project Status
               </button>
             </div>
 
@@ -215,7 +215,7 @@ export default function RENHomePage() {
                 onClick={() => navigate('/login3/resident')}
                 className="block w-full mx-4 bg-blue-600 text-white px-5 py-2 rounded-lg font-medium transition-all"
               >
-                My Updates
+                Project Status
               </button>
             </div>
           )}
