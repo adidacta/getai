@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { User, Mail, Lock, Eye, EyeOff, Phone, Briefcase, Building, CheckCircle, Info } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -15,23 +15,31 @@ export default function StakeholderInviteDemo() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
     phone: '',
     password: '',
     confirmPassword: '',
     acceptedTerms: false
   });
 
-  // Mock invite data
+  // Mock invite data - now with PROJECT context
   const inviteData = {
-    type: 'company', // or 'project'
-    companyName: 'ABC Real Estate Company',
-    projectName: 'Ben Yehuda 45 Renewal Project',
-    inviterName: 'John Cohen',
-    inviterRole: 'Company Owner',
-    email: 'invited@example.com',
-    inviteeRole: 'contractor'
+    type: 'project',
+    projectName: 'Ben Yehuda 45',
+    inviterName: 'Sarah Cohen',
+    inviterCompany: 'XYZ Developers',
+    inviterRole: 'Project Manager',
+    // Pre-filled invitee data (from the invite)
+    inviteeName: 'John Doe',
+    inviteeEmail: 'john@abclaw.com',
+    inviteeCompany: 'ABC Law Firm',
+    inviteeRole: 'Lawyer',
+  };
+
+  // For scenario 2 (logged in user)
+  const currentUser = {
+    name: 'Sarah Johnson',
+    email: 'sarah.johnson@example.com',
+    company: 'Johnson Legal Services'
   };
 
   const handleInputChange = (e) => {
@@ -47,18 +55,6 @@ export default function StakeholderInviteDemo() {
     e.preventDefault();
 
     // Validation
-    if (!formData.name.trim()) {
-      setError('Please enter your full name');
-      return;
-    }
-    if (!formData.email.trim()) {
-      setError('Please enter an email address');
-      return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      setError('Invalid email address');
-      return;
-    }
     if (!formData.password) {
       setError('Please enter a password');
       return;
@@ -89,19 +85,21 @@ export default function StakeholderInviteDemo() {
 
     try {
       const result = await signup({
-        name: formData.name,
-        email: formData.email,
+        name: inviteData.inviteeName,
+        email: inviteData.inviteeEmail,
         phone: formData.phone || undefined,
         password: formData.password,
         userType: 'stakeholder',
         inviteToken: 'demo-token',
-        role: inviteData.inviteeRole
+        role: inviteData.inviteeRole,
+        company: inviteData.inviteeCompany,
+        projectId: 'project-123'
       });
 
       if (result.success) {
-        console.log('Signup via stakeholder invite successful:', result.user);
-        alert('Signup successful! You are now part of ' + inviteData.companyName);
-        navigate('/login');
+        console.log('Signup via project invite successful:', result.user);
+        alert(`Welcome to ${inviteData.projectName}! You can now collaborate with ${inviteData.inviterName}.`);
+        navigate('/project');
       } else {
         setError(result.error || 'Signup failed');
       }
@@ -117,9 +115,9 @@ export default function StakeholderInviteDemo() {
     setLoading(true);
     // Mock API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-    alert('Invitation accepted! You are now part of ' + inviteData.companyName);
+    alert(`You are now collaborating on ${inviteData.projectName} with ${inviteData.inviterName}!`);
     setLoading(false);
-    navigate('/login');
+    navigate('/project');
   };
 
   // Scenario 1: New user - signup flow
@@ -128,68 +126,68 @@ export default function StakeholderInviteDemo() {
       <div className="space-y-6 min-h-[400px]">
         {/* Header */}
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 leading-none mb-3" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-            You've Been Invited!
+          <h2 className="text-2xl font-bold text-gray-900 leading-tight mb-2" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+            Hi {inviteData.inviteeName}. You've Been Invited!
           </h2>
           <p className="text-sm text-gray-600" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-            {inviteData.inviterName} invites you to join {inviteData.companyName}
+            {inviteData.inviterName} from {inviteData.inviterCompany} invited you to collaborate on project <strong>{inviteData.projectName}</strong>
           </p>
         </div>
 
-        {/* Invite Info */}
-        <div>
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Building className="w-5 h-5 text-blue-600" />
-              <h3 className="font-semibold text-gray-800" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-                Join Company as {inviteData.inviteeRole}
-              </h3>
+        {/* Invite Info Card */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <Briefcase className="w-5 h-5 text-blue-600" />
             </div>
-            <p className="text-sm text-gray-700 mb-1" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-              {inviteData.companyName}
-            </p>
-            <p className="text-xs text-gray-600" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-              Invited by: {inviteData.inviterName} ({inviteData.inviterRole})
-            </p>
+            <div className="flex-1">
+              <p className="text-sm text-gray-600 mb-1" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+                <strong>Inviter:</strong> {inviteData.inviterCompany} ({inviteData.inviterName}, {inviteData.inviterRole})
+              </p>
+              <p className="text-sm text-gray-600" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+                <strong>Project:</strong> {inviteData.projectName}
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Form */}
+        {/* Pre-filled Info (Read-only) */}
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-gray-700 mb-3" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+            Your Details
+          </h3>
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center gap-2">
+              <Building size={14} className="text-gray-400" />
+              <span className="text-gray-600">Company:</span>
+              <span className="font-medium text-gray-900">{inviteData.inviteeCompany}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <User size={14} className="text-gray-400" />
+              <span className="text-gray-600">Name:</span>
+              <span className="font-medium text-gray-900">{inviteData.inviteeName}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Mail size={14} className="text-gray-400" />
+              <span className="text-gray-600">Email:</span>
+              <span className="font-medium text-gray-900">{inviteData.inviteeEmail}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Briefcase size={14} className="text-gray-400" />
+              <span className="text-gray-600">Role:</span>
+              <span className="font-medium text-gray-900">{inviteData.inviteeRole}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Registration Form */}
         <form onSubmit={handleSignup} className="flex flex-col flex-1">
-          <h2 className="text-xl font-semibold mb-4" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+          <h3 className="text-sm font-semibold text-gray-700 mb-3" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
             Complete Registration
-          </h2>
+          </h3>
 
           <div className="space-y-3 mb-4">
-            {/* Name */}
-            <div className="border border-[#D3D3D3] rounded-md p-3 flex items-center">
-              <User size={16} className="text-black/87 mr-2" />
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                placeholder="Full Name"
-                className="flex-1 px-1 bg-white border-none outline-none"
-                style={{ fontFamily: '"Noto Sans", sans-serif' }}
-              />
-            </div>
-
-            {/* Email */}
-            <div className="border border-[#D3D3D3] rounded-md p-3 flex items-center">
-              <Mail size={16} className="text-black/87 mr-2" />
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="Email"
-                className="flex-1 px-1 bg-white border-none outline-none"
-                style={{ fontFamily: '"Noto Sans", sans-serif' }}
-              />
-            </div>
-
-            {/* Phone */}
+            {/* Phone (optional) */}
             <div className="border border-[#D3D3D3] rounded-md p-3 flex items-center">
               <Phone size={16} className="text-black/87 mr-2" />
               <input
@@ -291,7 +289,7 @@ export default function StakeholderInviteDemo() {
             {loading ? 'Submitting...' : (
               <>
                 <CheckCircle size={16} />
-                Accept Invitation and Sign Up
+                Accept & Join Project
               </>
             )}
           </button>
@@ -300,11 +298,11 @@ export default function StakeholderInviteDemo() {
           <div className="flex justify-center items-center pt-4 gap-2">
             <button
               type="button"
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/login3/stakeholder')}
               className="text-[#0C6DFA] font-semibold text-sm"
               style={{ fontFamily: '"Noto Sans", sans-serif' }}
             >
-              Already registered? Login
+              Already have an account? Sign in
             </button>
           </div>
         </form>
@@ -318,43 +316,58 @@ export default function StakeholderInviteDemo() {
       <div className="space-y-6 min-h-[400px]">
         {/* Header */}
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 leading-none mb-3" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-            You've Been Invited!
+          <h2 className="text-2xl font-bold text-gray-900 leading-tight mb-2" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+            Hi {currentUser.name}. You've Been Invited!
           </h2>
           <p className="text-sm text-gray-600" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-            {inviteData.inviterName} invites you to join {inviteData.companyName}
+            {inviteData.inviterName} from {inviteData.inviterCompany} invited you to collaborate on project <strong>{inviteData.projectName}</strong>
           </p>
         </div>
 
-        {/* Invite Info */}
-        <div>
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Building className="w-5 h-5 text-blue-600" />
-              <h3 className="font-semibold text-gray-800" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-                Join Company as {inviteData.inviteeRole}
-              </h3>
+        {/* Invite Info Card */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <Briefcase className="w-5 h-5 text-blue-600" />
             </div>
-            <p className="text-sm text-gray-700 mb-1" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-              {inviteData.companyName}
-            </p>
-            <p className="text-xs text-gray-600" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-              Invited by: {inviteData.inviterName} ({inviteData.inviterRole})
-            </p>
+            <div className="flex-1">
+              <p className="text-sm text-gray-600 mb-1" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+                <strong>Inviter:</strong> {inviteData.inviterCompany} ({inviteData.inviterName}, {inviteData.inviterRole})
+              </p>
+              <p className="text-sm text-gray-600" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+                <strong>Project:</strong> {inviteData.projectName}
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Current User Info */}
+        {/* Your Info (Read-only) */}
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-          <h3 className="font-semibold text-gray-800 mb-2" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-            Your Account
+          <h3 className="text-sm font-semibold text-gray-700 mb-3" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+            Your Details
           </h3>
-          <p className="text-sm text-gray-700" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-            Sarah Johnson
-          </p>
-          <p className="text-xs text-gray-600" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-            sarah.johnson@example.com
-          </p>
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center gap-2">
+              <Building size={14} className="text-gray-400" />
+              <span className="text-gray-600">Company:</span>
+              <span className="font-medium text-gray-900">{inviteData.inviteeCompany}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <User size={14} className="text-gray-400" />
+              <span className="text-gray-600">Name:</span>
+              <span className="font-medium text-gray-900">{inviteData.inviteeName}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Mail size={14} className="text-gray-400" />
+              <span className="text-gray-600">Email:</span>
+              <span className="font-medium text-gray-900">{inviteData.inviteeEmail}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Briefcase size={14} className="text-gray-400" />
+              <span className="text-gray-600">Role:</span>
+              <span className="font-medium text-gray-900">{inviteData.inviteeRole}</span>
+            </div>
+          </div>
         </div>
 
         {/* Accept Button */}
@@ -375,7 +388,7 @@ export default function StakeholderInviteDemo() {
         {/* Decline option */}
         <div className="text-center">
           <button
-            onClick={() => navigate('/login')}
+            onClick={() => navigate('/project')}
             className="text-gray-600 hover:text-gray-800 text-sm"
             style={{ fontFamily: '"Noto Sans", sans-serif' }}
           >
@@ -392,40 +405,71 @@ export default function StakeholderInviteDemo() {
       <div className="space-y-6 min-h-[400px]">
         {/* Header */}
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 leading-none mb-3" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-            Hi Sarah. You've Been Invited!
+          <h2 className="text-2xl font-bold text-gray-900 leading-tight mb-2" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+            Hi {inviteData.inviteeName}. You've Been Invited!
           </h2>
+          <p className="text-sm text-gray-600" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+            {inviteData.inviterName} from {inviteData.inviterCompany} invited you to collaborate on project <strong>{inviteData.projectName}</strong>
+          </p>
         </div>
 
-        {/* Invite Info */}
-        <div>
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Building className="w-5 h-5 text-blue-600" />
-              <h3 className="font-semibold text-gray-800" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-                Join Company as {inviteData.inviteeRole}
-              </h3>
+        {/* Invite Info Card */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <Briefcase className="w-5 h-5 text-blue-600" />
             </div>
-            <p className="text-sm text-gray-700 mb-1" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-              {inviteData.companyName}
-            </p>
-            <p className="text-xs text-gray-600" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
-              Invited by: {inviteData.inviterName} ({inviteData.inviterRole})
-            </p>
+            <div className="flex-1">
+              <p className="text-sm text-gray-600 mb-1" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+                <strong>Inviter:</strong> {inviteData.inviterCompany} ({inviteData.inviterName}, {inviteData.inviterRole})
+              </p>
+              <p className="text-sm text-gray-600" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+                <strong>Project:</strong> {inviteData.projectName}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Your Info (Read-only) */}
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-gray-700 mb-3" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+            Your Details
+          </h3>
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center gap-2">
+              <Building size={14} className="text-gray-400" />
+              <span className="text-gray-600">Company:</span>
+              <span className="font-medium text-gray-900">{inviteData.inviteeCompany}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <User size={14} className="text-gray-400" />
+              <span className="text-gray-600">Name:</span>
+              <span className="font-medium text-gray-900">{inviteData.inviteeName}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Mail size={14} className="text-gray-400" />
+              <span className="text-gray-600">Email:</span>
+              <span className="font-medium text-gray-900">{inviteData.inviteeEmail}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Briefcase size={14} className="text-gray-400" />
+              <span className="text-gray-600">Role:</span>
+              <span className="font-medium text-gray-900">{inviteData.inviteeRole}</span>
+            </div>
           </div>
         </div>
 
         {/* Info Message */}
-        <div className="flex items-start gap-2">
-          <Info className="w-4 h-4 text-gray-600 mt-0.5 flex-shrink-0" />
-          <p className="text-sm text-gray-700" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
+        <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg p-3">
+          <Info className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+          <p className="text-sm text-amber-800" style={{ fontFamily: '"Noto Sans", sans-serif' }}>
             To accept the invite, please sign in with your GetStatus account
           </p>
         </div>
 
         {/* Sign In Button */}
         <button
-          onClick={() => navigate('/login/stakeholder')}
+          onClick={() => navigate('/login3/stakeholder?redirect=/invite/demo?scenario=2')}
           className="w-full bg-[#0C6DFA] text-white py-3 px-4 rounded shadow-md font-semibold text-sm flex items-center justify-center gap-2"
           style={{ fontFamily: '"Noto Sans", sans-serif' }}
         >
@@ -438,7 +482,7 @@ export default function StakeholderInviteDemo() {
             Don't have a GetStatus account?
           </p>
           <button
-            onClick={() => navigate('/signup')}
+            onClick={() => navigate('/invite/demo?scenario=1')}
             className="text-blue-600 hover:text-blue-700 font-semibold text-sm hover:underline"
             style={{ fontFamily: '"Noto Sans", sans-serif' }}
           >

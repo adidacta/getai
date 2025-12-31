@@ -18,6 +18,8 @@ import ResidentLoginV3 from './components/ResidentLoginV3';
 import StakeholderLoginV3 from './components/StakeholderLoginV3';
 import OTPVerificationV3 from './components/OTPVerificationV3';
 import ForgotPasswordV3 from './components/ForgotPasswordV3';
+import ProjectPage from './components/ProjectPage';
+import AddStakeholderFlow from './components/AddStakeholderFlow';
 import DevNavigator from './components/DevNavigator';
 
 function App() {
@@ -28,11 +30,34 @@ function App() {
         <DevNavigator />
 
         <Routes>
-          {/* Default route - REN Home Page */}
-          <Route path="/" element={<RENHomePage />} />
+          {/* Default route - Project Page */}
+          <Route path="/" element={<ProjectPage />} />
 
-          {/* Login routes */}
-          <Route path="/login/:userType?" element={<LoginSelection />} />
+          {/* ============================================ */}
+          {/* V2 COLLABORATION FLOWS                      */}
+          {/* ============================================ */}
+
+          {/* Project Page - Entry point for inviting stakeholders */}
+          <Route path="/project" element={<ProjectPage />} />
+
+          {/* Add Stakeholder Flow - Multi-step dialog */}
+          <Route path="/project/invite" element={<AddStakeholderFlow />} />
+
+          {/* Invite acceptance - All 3 scenarios (new user, logged in, logged out) */}
+          <Route path="/invite/demo" element={<StakeholderInviteDemo />} />
+
+          {/* ============================================ */}
+          {/* V3 AUTH PAGES (Current/Modern)              */}
+          {/* ============================================ */}
+
+          <Route path="/login3/resident" element={<ResidentLoginV3 />} />
+          <Route path="/login3/stakeholder" element={<StakeholderLoginV3 />} />
+          <Route path="/verify-otp3" element={<OTPVerificationV3 />} />
+          <Route path="/forgot-password3" element={<ForgotPasswordV3 />} />
+
+          {/* ============================================ */}
+          {/* SIGNUP FLOWS                                */}
+          {/* ============================================ */}
 
           {/* User type selection (first step of signup) */}
           <Route path="/signup" element={<UserTypeSelection />} />
@@ -42,6 +67,13 @@ function App() {
 
           {/* Stakeholder signup flow */}
           <Route path="/signup/stakeholder" element={<StakeholderSignup />} />
+
+          {/* ============================================ */}
+          {/* LEGACY/V1 ROUTES (kept for reference)       */}
+          {/* ============================================ */}
+
+          {/* Login routes */}
+          <Route path="/login/:userType?" element={<LoginSelection />} />
 
           {/* OTP verification */}
           <Route path="/verify-otp" element={<OTPVerification />} />
@@ -55,20 +87,11 @@ function App() {
           {/* Invite-based signup (with token in URL) */}
           <Route path="/invite/:token" element={<InviteSignup />} />
 
-          {/* Stakeholder invite demo (use ?scenario=1,2,3) */}
-          <Route path="/invite/demo" element={<StakeholderInviteDemo />} />
-
-          {/* Netflix-style landing pages */}
+          {/* Netflix-style landing pages (V2) */}
           <Route path="/login2/resident" element={<ResidentLanding />} />
           <Route path="/login2/stakeholder" element={<StakeholderLanding />} />
 
-          {/* V3 - Simple, modern facelift of current page */}
-          <Route path="/login3/resident" element={<ResidentLoginV3 />} />
-          <Route path="/login3/stakeholder" element={<StakeholderLoginV3 />} />
-          <Route path="/verify-otp3" element={<OTPVerificationV3 />} />
-          <Route path="/forgot-password3" element={<ForgotPasswordV3 />} />
-
-          {/* REN Home Page with redesigned nav (also available at /ren) */}
+          {/* REN Home Page (also available at /ren) */}
           <Route path="/ren" element={<RENHomePage />} />
 
           {/* Catch all - redirect to home */}
