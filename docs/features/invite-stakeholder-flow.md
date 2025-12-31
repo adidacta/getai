@@ -2,239 +2,160 @@
 
 ## TL;DR
 
-A stakeholder (inviter) can invite another stakeholder (invitee) to collaborate on a project through a 3-step dialog flow. The invitee can be either an existing GetStatus user or a new user. After the inviter sends the invitation, the invitee receives an email and can accept through one of three scenarios: signup (new user), one-click accept (logged in), or login-to-accept (logged out).
+A stakeholder can invite another stakeholder to collaborate on a project through a 3-step dialog flow. The flow starts from the Project Page when clicking "Choose" on an unassigned stakeholder slot, and ends when the invitation is sent.
 
-### Quick Flow Summary
+### Quick Flow
 
 ```
-INVITER SIDE:
-Project Page → Click "Choose" → Search Stakeholder → Enter Details → Confirm → Send
-
-INVITEE SIDE:
-Email Link → Accept Page → [Signup | Accept | Login] → Joined Project
+Project Page → Click "Choose" → Search → Details → Confirm → Invitation Sent
 ```
 
 ### Key Files
 - `frontend/src/components/ProjectPage.jsx` - Project page with "Choose" buttons
 - `frontend/src/components/AddStakeholderFlow.jsx` - Multi-step invite dialog
-- `frontend/src/components/StakeholderInviteDemo.jsx` - Invitee acceptance screens
 
 ---
 
-## Detailed Requirements
+## Flow Overview
 
-### 1. Project Page (Entry Point)
+### Entry Point: Project Page
 
 **Route:** `/` (default) or `/project`
 
-**Purpose:** Display project information and stakeholder slots that need to be filled.
+The Project Page displays stakeholder slots. Unassigned slots show a "Choose" button that initiates the invite flow.
 
-**UI Elements:**
-- Project header with name (e.g., "Ben Yehuda 45")
-- Stakeholder cards showing:
-  - Assigned stakeholders (green, with checkmark)
-  - Unassigned slots (gray, with "Choose" button)
-- "Choose" button initiates invite flow
-
-**Stakeholder Roles:**
-- Representative
-- Builder
-- Lawyer
-- Supervisor
-- Additional: PM, Municipality, Appraiser, Public Housing
-
-**Behavior:**
-- Clicking "Choose" navigates to `/project/invite?role={roleKey}`
-- Role is passed via URL parameter
+**Clicking "Choose"** navigates to `/project/invite?role={roleKey}`
 
 ---
 
-### 2. Add Stakeholder Dialog (Inviter Flow)
+## Dialog Steps
 
-**Route:** `/project/invite?role={role}`
+### Layout
 
-**Layout:** Two-column dialog
-- Left: Blue gradient sidebar with benefits/reassurance
-- Right: Form steps
+Two-column dialog:
+- **Left:** Blue gradient sidebar with benefits and privacy reassurance
+- **Right:** Form content (steps)
+- **Fixed height:** 620px to prevent layout shifts between steps
 
-#### Step 1: Search
+---
 
-**Purpose:** Find stakeholder in the Real Estate Network
+### Step 1: Search
 
-**UI Elements:**
+**Purpose:** Find a stakeholder in the Real Estate Network
+
+**Elements:**
 - Title: "Add a Stakeholder"
 - Subtitle: "Search the Real Estate Network"
-- Search input with dynamic label: "Search {count} {role}s" (e.g., "Search 307 lawyers")
-- Results area (fixed height to prevent layout shift):
-  - Empty state: Shows REN stats widgets
-  - Results: List of matching stakeholders
-  - No results: "Not found" with "Invite to REN" button
+- Search input with dynamic label based on role: "Search 307 lawyers"
+- Fixed-height results area (prevents layout shift)
 
-**Search Logic:**
-- Searches by name OR company name
-- Case-insensitive
-- Minimum 2 characters to trigger search
-- Does NOT filter by role (allows finding anyone)
+**Results Area States:**
+1. **Empty (no query):** Shows REN stats as social proof widgets
+2. **Results found:** Selectable list of stakeholders
+3. **No results:** "Not found" message with "Invite to REN" button
 
-**REN Stats Display (empty state):**
-```
-307 Lawyers | 300 Developers | 538 Representatives
-77 Supervisors | 41 Appraisers | 3,830 Projects
-```
+**Search Behavior:**
+- Searches by name OR company (case-insensitive)
+- Minimum 2 characters to trigger
+- No role filtering (find anyone, assign role later)
 
 **Actions:**
-- Select stakeholder from results → enables "Next" button
-- "Invite to REN" (when not found) → goes to Step 2 with empty form
-- "Cancel" → confirmation dialog if data entered
+- Select stakeholder → enables "Next"
+- "Invite to REN" → proceeds to Step 2 with empty form
+- "Cancel" → shows confirmation if data entered
 
-#### Step 2: Details
+---
 
-**Purpose:** Review/edit stakeholder details and assign role
+### Step 2: Details
 
-**UI Elements:**
-- Title: "Confirm Details" (existing user) or "Invite to REN" (new user)
-- Form fields:
-  1. Name (prefilled if existing, editable if new)
-  2. Role in this project (always editable dropdown)
-  3. Company (prefilled if existing, editable if new)
-  4. Email (always editable)
+**Purpose:** Review or enter stakeholder details
 
-**Field Behavior:**
-- Existing GTS user: Name, Company prefilled and disabled; Role, Email editable
-- New user: All fields editable
+**Title:** "Confirm Details" (existing user) or "Invite to REN" (new user)
 
-**Validation:**
-- All fields required
-- Email must be valid format
+**Fields (in order):**
+1. **Name** - Prefilled if existing, editable if new
+2. **Role in this project** - Always editable (dropdown)
+3. **Company** - Prefilled if existing, editable if new
+4. **Email** - Always editable
+
+**Validation:** All fields required, valid email format
 
 **Actions:**
-- "Back" → returns to Step 1
-- "Next" → goes to Step 3
+- "Back" → Step 1
+- "Next" → Step 3
 
-#### Step 3: Confirm
+---
 
-**Purpose:** Final review before sending invitation
+### Step 3: Confirm
 
-**UI Elements:**
+**Purpose:** Final review before sending
+
+**Elements:**
 - Title: "Confirm Invitation"
-- "YOU'RE INVITING" label with stakeholder card:
-  - Avatar placeholder
+- **"YOU'RE INVITING"** label + stakeholder card:
+  - Avatar icon
   - Name (bold)
   - Role at Company
   - Email
-- "TO PROJECT" label with project card:
+- **"TO PROJECT"** label + project card:
   - Building icon
   - Project name
-  - "Urban Renewal Project" subtitle
-- Privacy notice: "Only shared workspace content will be visible to {name}"
-- Terms checkbox: "I agree to the Terms and Privacy Policy"
+  - "Urban Renewal Project"
+- Privacy notice (green): "Only shared workspace content will be visible to {name}"
+- Terms checkbox
 
 **Actions:**
 - "Cancel" → confirmation dialog
-- "Send Invitation" → sends invite, goes to Step 4
+- "Send Invitation" → sends invite → Step 4
 
-#### Step 4: Success
+---
 
-**Purpose:** Confirm invitation sent
+### Step 4: Success
 
-**UI Elements:**
-- Green checkmark icon
+**Purpose:** Confirm invitation was sent
+
+**Elements:**
+- Green checkmark
 - Title: "Invitation Sent!"
-- Subtitle: "{Name} will receive an email to join {Project}"
-- "What's next" card:
-  1. They receive your invitation
-  2. They accept and join
-  3. Start collaborating!
+- "{Name} will receive an email to join {Project}"
+- "What's next" steps (1, 2, 3)
 - Privacy reassurance: "You have full control over what to share with {name}"
 - "Done" button → returns to Project Page
 
 ---
 
-### 3. Benefits Sidebar
+## Sidebar Content
 
-**Purpose:** Reassure inviter about the value and privacy
+**Logo:** GetStatus logo (centered)
 
-**Content:**
-- GetStatus logo (centered)
-- Title: "Collaborate on GetStatus"
-- Subtitle: "Add stakeholders to streamline your project collaboration"
-- Benefits list:
-  - Real-time Updates - Share progress instantly
-  - Secure Documents - Exchange files safely
-  - Shared Workspace - Collaborate in one place
-- Privacy section: "Your Privacy Protected - Only shared workspace content is visible. Your private data stays private."
+**Title:** "Collaborate on GetStatus"
 
----
+**Benefits:**
+- Real-time Updates
+- Secure Documents
+- Shared Workspace
 
-### 4. Invitee Acceptance (3 Scenarios)
-
-**Route:** `/invite/demo?scenario={1|2|3}`
-
-**Common Elements:**
-- Header: "Hi {name}. You've Been Invited!"
-- Invite details card showing inviter, project, and assigned role
-
-#### Scenario 1: New User (No Account)
-
-**Purpose:** Allow new users to signup and accept invite
-
-**Form Fields:**
-- Full Name (required)
-- Email (required, prefilled from invite)
-- Phone Number (optional)
-- Password (required, min 8 chars)
-- Confirm Password (required, must match)
-- Terms acceptance checkbox
-
-**Actions:**
-- "Create Account & Accept" → creates account, accepts invite, redirects to dashboard
-
-#### Scenario 2: Existing User, Logged In
-
-**Purpose:** One-click acceptance for authenticated users
-
-**UI Elements:**
-- Shows current user info (prefilled, read-only)
-- Single "Accept Invitation" button
-
-**Actions:**
-- "Accept Invitation" → immediately adds to project, redirects to dashboard
-
-#### Scenario 3: Existing User, Logged Out
-
-**Purpose:** Prompt login before accepting
-
-**UI Elements:**
-- Info message: "To accept the invite, please sign in with your GetStatus account"
-- "Sign In to Accept Invitation" button
-- "Create a new account" link
-
-**Actions:**
-- "Sign In" → redirects to login, preserves invite context
-- After login → auto-accepts invite, redirects to dashboard
+**Privacy:** "Your Privacy Protected - Only shared workspace content is visible."
 
 ---
 
-### 5. Step Progress Indicator
+## Step Progress Indicator
 
-**Design:**
-- Horizontal stepper with 3 steps: Search → Details → Confirm
-- Each step shows:
-  - Number (1, 2, 3) or checkmark when completed
-  - Label (hidden on mobile)
-- Connecting lines between steps
+- 3 steps: Search → Details → Confirm
+- Numbers (1, 2, 3) change to checkmarks when completed
+- Labels visible on desktop, hidden on mobile
 - Current step has ring highlight
 
 ---
 
-### 6. Cancel Confirmation
+## Cancel Confirmation Dialog
 
-**Trigger:** Clicking Cancel or X when form has data
+**Trigger:** Cancel/X when form has data
 
-**Dialog:**
-- Title: "Cancel Invitation?"
-- Message: "Are you sure you want to discard this invite?"
-- Actions: "Go back" | "Discard"
+**Content:**
+- "Cancel Invitation?"
+- "Are you sure you want to discard this invite?"
+- "Go back" | "Discard"
 
 ---
 
@@ -242,23 +163,14 @@ Email Link → Accept Page → [Signup | Accept | Login] → Joined Project
 
 ### Role Options
 ```javascript
-{
-  value: 'lawyer',
-  label: 'Lawyer',
-  plural: 'lawyers',
-  count: 307
-}
-```
-
-### Mock Stakeholders (for demo)
-```javascript
-{
-  id: 1,
-  name: 'Moshe Haim',
-  company: 'Tidhar',
-  role: 'builder',
-  email: 'moshe.haim@tidhar.co.il'
-}
+{ value: 'lawyer', label: 'Lawyer', plural: 'lawyers', count: 307 }
+{ value: 'builder', label: 'Builder', plural: 'builders', count: 300 }
+{ value: 'supervisor', label: 'Supervisor', plural: 'supervisors', count: 77 }
+{ value: 'appraiser', label: 'Appraiser', plural: 'appraisers', count: 41 }
+{ value: 'representative', label: 'Representative', plural: 'representatives', count: 538 }
+{ value: 'pm', label: 'Project Manager', plural: 'project managers', count: 45 }
+{ value: 'municipality', label: 'Municipality', plural: 'municipalities', count: 28 }
+{ value: 'public_housing', label: 'Public Housing', plural: 'public housing', count: 12 }
 ```
 
 ### Form Data
@@ -271,105 +183,38 @@ Email Link → Accept Page → [Signup | Accept | Login] → Joined Project
 }
 ```
 
-### Invite Data (for invitee screens)
-```javascript
-{
-  type: 'project',
-  projectName: 'Ben Yehuda 45',
-  inviterName: 'Sarah Cohen',
-  inviterCompany: 'XYZ Developers',
-  inviterRole: 'Project Manager',
-  inviteeName: 'John Doe',
-  inviteeEmail: 'john@abclaw.com',
-  inviteeCompany: 'ABC Law Firm',
-  inviteeRole: 'Lawyer'
-}
-```
-
 ---
 
-## Design Specifications
+## Design Specs
 
 ### Colors
-- Primary Blue: `#2563EB` (blue-600)
-- Success Green: `#16A34A` (green-600)
-- Sidebar Gradient: `from-blue-600 to-indigo-700`
-- Background: `#F3F4F6` (gray-100)
-- Cards: White with `border-gray-200`
+- Primary: `blue-600`
+- Success: `green-600`
+- Sidebar: `from-blue-600 to-indigo-700`
+- Background: `gray-100`
+
+### Dimensions
+- Dialog: `max-w-4xl` (896px)
+- Sidebar: `w-80` (320px)
+- Content height: `h-[620px]`
+- Results area: `h-48`
 
 ### Typography
 - Font: Noto Sans
-- Headings: Bold, gray-900
-- Body: Regular, gray-700
-- Labels: Medium, gray-700
-- Muted: gray-400/500
-
-### Spacing
-- Dialog padding: 24px (p-6)
-- Card padding: 16px (p-4)
-- Field spacing: 16px (space-y-4)
-
-### Fixed Dimensions
-- Dialog max-width: `max-w-4xl` (896px)
-- Sidebar width: `w-80` (320px)
-- Content height: `h-[620px]`
-- Search results: `h-48` (192px)
-
-### Icons
-- Lucide React icons throughout
-- Avatar placeholders: Colored circles with User/Building icons
-
----
-
-## API Integration (Future)
-
-### Endpoints Needed
-1. `GET /api/stakeholders/search?q={query}` - Search REN
-2. `POST /api/invites` - Send invitation
-3. `GET /api/invites/:token` - Get invite details
-4. `POST /api/invites/:token/accept` - Accept invitation
-5. `POST /api/auth/signup-with-invite` - Signup and accept
-
-### Webhook Events
-- `invite.sent` - When invitation is created
-- `invite.accepted` - When invitee accepts
-- `invite.expired` - When invite expires (future)
+- Headings: Bold, `text-gray-900`
+- Labels: Medium, `text-gray-700`
 
 ---
 
 ## Testing Checklist
 
-### Inviter Flow
-- [ ] Can search for existing stakeholder by name
-- [ ] Can search for existing stakeholder by company
-- [ ] Search shows "not found" for non-existent users
-- [ ] Can invite new user via "Invite to REN"
-- [ ] Form validation works for all fields
-- [ ] Can change role assignment for existing user
-- [ ] Cancel shows confirmation when data entered
-- [ ] Success screen displays correct information
-
-### Invitee Flow
-- [ ] Scenario 1: Can complete signup form
-- [ ] Scenario 1: Validation works (password match, etc.)
-- [ ] Scenario 2: One-click accept works
-- [ ] Scenario 3: Login redirect preserves invite context
-
-### UI/UX
-- [ ] Dialog height is consistent across all steps
-- [ ] Sidebar extends full height
+- [ ] Search finds stakeholders by name
+- [ ] Search finds stakeholders by company
+- [ ] "Not found" shows when no results
+- [ ] "Invite to REN" works for new users
+- [ ] All form fields validate correctly
+- [ ] Role can be changed for existing users
+- [ ] Cancel confirmation appears when data entered
+- [ ] Success screen shows correct info
+- [ ] Dialog height stays consistent across steps
 - [ ] Step indicator updates correctly
-- [ ] Loading states show during async operations
-- [ ] Responsive on mobile (sidebar hidden)
-
----
-
-## Future Enhancements
-
-1. **Batch Invites** - Invite multiple stakeholders at once
-2. **Invite Inbox** - View pending invitations
-3. **Resend/Cancel** - Manage sent invitations
-4. **Custom Messages** - Add personal note to invite
-5. **Invite Expiration** - Auto-expire after X days
-6. **Role Suggestions** - AI-powered role matching
-7. **Company Directory** - Browse stakeholders by company
